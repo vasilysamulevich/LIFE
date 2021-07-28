@@ -15,16 +15,25 @@ Cell = namedtuple("Cell", "is_alive number_of_living_cells_around")
 Coord = namedtuple("Coord", "x y")
 living_cells = {Coord(randrange(0, WIDTH, 10), randrange(0, HEIGHT, 10)): Cell(True, 0) for _ in range(randint(3000, 5000))}
 #living_cells = {Coord(x, y): Cell(True, 0) for x in range(300, 400, 10) for y in range(300, 400, 10)}  # КВАДРАТ
+# living_cells = {
+#     Coord(100, 400): Cell(True, 0),
+#     Coord(110, 400): Cell(True, 0),
+#     Coord(120, 400): Cell(True, 0),
+#     Coord(120, 390): Cell(True, 0),
+#     Coord(110, 380): Cell(True, 0),
+# }
+
+
 
 
 def new_living_cells(cells: dict):
     old_cells = cells.copy()
     for coord in old_cells:
-        for i in range(-10, 20, 10):
-            for j in range(-10, 20, 10):
+        for i in (-10, 0, 10):
+            for j in (-10, 0, 10):
                 if not i == j == 0:
                     new_coord = Coord(coord.x + i, coord.y + j)
-                    if new_coord in old_cells.keys():  # if point living
+                    if new_coord in cells.keys():
                         cells[new_coord] = Cell(cells[new_coord].is_alive,
                                                 cells[new_coord].number_of_living_cells_around + 1)
                     else:
@@ -58,9 +67,8 @@ while running:
 
     screen.fill(BLACK)
     for cell in living_cells:
-        pygame.draw.rect(screen, GREEN, (*cell, 10, 10))
-
-    pygame.display.flip()   # pygame.display.update()
+        pygame.draw.rect(screen, GREEN, (cell.x, cell.y, 10, 10))
+    pygame.display.flip()
     new_living_cells(living_cells)
     # Держим цикл на правильной скорости
     clock.tick(FPS)
