@@ -1,10 +1,12 @@
+from time import sleep
+
 import pygame
 from collections import namedtuple
 from random import randint, randrange
 
 WIDTH = 800
 HEIGHT = 800
-FPS = 2
+FPS = 10
 colors = {"WHITE": (255, 255, 255),
           "GREEN": (0, 255, 0),
           "BLACK": (0, 0, 0),
@@ -31,9 +33,13 @@ def new_living_cells(cells: dict):
 
     old_cells = cells.copy()
     for cell in old_cells:
-        if not old_cells[cell].is_alive and old_cells[cell].number_of_living_cells_around != 3 or \
-                old_cells[cell].is_alive and old_cells[cell].number_of_living_cells_around not in (2, 3):
+        if not old_cells[cell].is_alive and old_cells[cell].number_of_living_cells_around == 3:
+            cells[cell] = Cell(True, old_cells[cell].number_of_living_cells_around)
+        if old_cells[cell].is_alive and old_cells[cell].number_of_living_cells_around not in (2, 3):
             cells.pop(cell)
+    for cell in cells:
+        cells[cell] = Cell(True, 0)
+    
 
 
 
@@ -50,10 +56,10 @@ while running:
         if event.type == pygame.QUIT:  # check for closing window
             running = False
 
-    screen.fill(colors["WHITE"])
+    screen.fill(colors["BLACK"])
     for cell in living_cells:
-        pygame.draw.rect(screen, colors["RED"], (*cell, 10, 10))
-    pygame.display.flip()
+        pygame.draw.rect(screen, colors["GREEN"], (*cell, 10, 10))
+    pygame.display.update() #pygame.display.flip()
 
     new_living_cells(living_cells)
     # Держим цикл на правильной скорости
